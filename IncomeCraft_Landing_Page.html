@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IncomeCraft — The No-Experience Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0D080;
+    --gold-dim: #7A6230;
+    --bg: #080808;
+    --bg2: #111111;
+    --bg3: #181818;
+    --bg4: #1E1E1E;
+    --text: #D4D4D4;
+    --text-dim: #888888;
+    --white: #FFFFFF;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.98), transparent);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-cta {
+    background: var(--gold);
+    color: #000;
+    padding: 10px 24px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 7px 18px;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.2rem, 8vw, 7.5rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.35s forwards;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.5s forwards;
+  }
+
+  .hero-desc {
+    max-width: 540px;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.65s forwards;
+  }
+
+  .hero-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.8s forwards;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--gold);
+    color: #000;
+    padding: 18px 52px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 0 40px rgba(201,168,76,0.2);
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 50px rgba(201,168,76,0.35);
+  }
+
+  .price-tag {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .price-tag strong { color: var(--gold); font-size: 1.1rem; }
+  .price-tag s { color: #555; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .hero-scroll span { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+  .scroll-line {
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── SOCIAL PROOF ── */
+  .proof-strip {
+    border-top: 1px solid #1E1E1E;
+    border-bottom: 1px solid #1E1E1E;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+    flex-wrap: wrap;
+  }
+  .proof-item {
+    text-align: center;
+  }
+  .proof-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .proof-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { position: relative; z-index: 1; }
+
+  .section-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 100px 24px;
+  }
+
+  .section-tag {
+    display: inline-block;
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  .section-body {
+    font-size: 1rem;
+    color: var(--text);
+    max-width: 600px;
+    margin-bottom: 48px;
+  }
+
+  /* ── PROBLEM ── */
+  .problem { background: var(--bg2); }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .problem-card {
+    background: var(--bg3);
+    padding: 36px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .problem-card:hover { border-color: var(--gold); background: var(--bg4); }
+  .problem-card p {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-style: italic;
+  }
+  .problem-card p::before { content: '"'; color: var(--gold-dim); font-size: 2rem; font-family: 'Playfair Display', serif; line-height: 0; vertical-align: -12px; margin-right: 4px; }
+
+  /* ── MODULES ── */
+  .modules { background: var(--bg); }
+
+  .module-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .module-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    background: var(--bg3);
+    overflow: hidden;
+    transition: background 0.3s;
+    cursor: default;
+  }
+  .module-item:hover { background: var(--bg4); }
+  .module-item:hover .module-num { background: var(--gold); color: #000; }
+
+  .module-num {
+    background: #141414;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .module-content {
+    padding: 28px 32px;
+    border-left: 1px solid #222;
+  }
+
+  .module-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 6px;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .module-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+  }
+
+  /* ── BONUSES ── */
+  .bonuses { background: var(--bg2); }
+
+  .bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .bonus-card {
+    background: var(--bg3);
+    padding: 36px 28px;
+    border-top: 3px solid var(--gold);
+    transition: background 0.3s;
+  }
+  .bonus-card:hover { background: var(--bg4); }
+
+  .bonus-icon {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+
+  .bonus-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .bonus-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--bg); }
+
+  .testi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .testi-card {
+    background: var(--bg3);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .testi-stars { color: var(--gold); font-size: 0.85rem; letter-spacing: 3px; }
+
+  .testi-text {
+    font-size: 0.92rem;
+    color: var(--text);
+    font-style: italic;
+    flex: 1;
+  }
+
+  .testi-author {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .testi-author strong { color: var(--white); display: block; font-style: normal; }
+
+  /* ── FOR WHO ── */
+  .forwho { background: var(--bg2); }
+
+  .forwho-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 48px;
+  }
+
+  .forwho-col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #222;
+  }
+  .forwho-col.yes h3 { color: var(--gold); }
+  .forwho-col.no h3 { color: #555; }
+
+  .forwho-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .forwho-item .icon { flex-shrink: 0; margin-top: 2px; }
+  .forwho-col.yes .icon { color: var(--gold); }
+  .forwho-col.no .icon { color: #444; }
+
+  /* ── PRICING ── */
+  .pricing { background: var(--bg); }
+
+  .pricing-card {
+    max-width: 520px;
+    margin: 48px auto 0;
+    background: var(--bg3);
+    border: 1px solid #2A2A2A;
+    border-top: 3px solid var(--gold);
+    padding: 52px 48px;
+    text-align: center;
+    position: relative;
+  }
+
+  .price-badge {
+    position: absolute;
+    top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--gold);
+    color: #000;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    font-weight: 500;
+  }
+
+  .price-was {
+    font-size: 1rem;
+    color: #444;
+    text-decoration: line-through;
+    margin-bottom: 4px;
+  }
+
+  .price-now {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .price-now sup { font-size: 1.8rem; vertical-align: super; }
+
+  .price-note {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+  }
+
+  .price-includes {
+    text-align: left;
+    margin-bottom: 36px;
+  }
+
+  .price-includes-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #1E1E1E;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+  .price-includes-item:last-child { border-bottom: none; }
+  .price-includes-item .check { color: var(--gold); font-size: 0.75rem; }
+
+  .guarantee {
+    margin-top: 28px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .guarantee span:first-child { font-size: 1.2rem; }
+
+  /* ── FAQ ── */
+  .faq { background: var(--bg2); }
+
+  .faq-list {
+    max-width: 680px;
+    margin: 48px auto 0;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #1E1E1E;
+  }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 22px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--white);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .faq-q:hover { color: var(--gold); }
+  .faq-q .arrow { color: var(--gold); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; }
+  .faq-item.open .faq-q .arrow { transform: rotate(45deg); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    background: var(--bg);
+    text-align: center;
+    padding: 120px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -200px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .final-cta h2 em { font-style: italic; color: var(--gold); }
+  .final-cta p {
+    max-width: 480px;
+    margin: 0 auto 48px;
+    font-size: 1rem;
+    color: var(--text-dim);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid #1A1A1A;
+    padding: 36px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer .logo-f {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  footer p {
+    font-size: 0.78rem;
+    color: #444;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .proof-strip { gap: 32px; padding: 24px 20px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .module-item { grid-template-columns: 60px 1fr; }
+    .bonus-grid { grid-template-columns: 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .forwho-grid { grid-template-columns: 1fr; }
+    .pricing-card { padding: 40px 24px; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">IncomeCraft</a>
+  <a href="#pricing" class="nav-cta">Get the Playbook</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-tag">The No-Experience Playbook</span>
+  <h1>Turn Your Skills<br/>Into <em>Income.</em></h1>
+  <p class="hero-sub">From zero experience to your first paying client.</p>
+  <p class="hero-desc">You already have what it takes. What you're missing is the system. IncomeCraft gives you a step-by-step playbook to find your niche, build your portfolio, price your work, find clients, and get paid — starting now.</p>
+  <div class="hero-cta-wrap">
+    <a href="#pricing" class="btn-primary">Get Instant Access — $19</a>
+    <span class="price-tag">Launch price · <strong>$19</strong> · Regular price <s>$37</s></span>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- PROOF STRIP -->
+<div class="proof-strip reveal">
+  <div class="proof-item">
+    <span class="proof-num">6</span>
+    <span class="proof-label">Detailed Modules</span>
+  </div>
+  <div class="proof-item">
+    <span class="proof-num">3</span>
+    <span class="proof-label">Bonus Resources</span>
+  </div>
+  <div class="proof-item">
+    <span class="proof-num">30</span>
+    <span class="proof-label">Day Action Plan</span>
+  </div>
+  <div class="proof-item">
+    <span class="proof-num">10</span>
+    <span class="proof-label">Email Templates</span>
+  </div>
+  <div class="proof-item">
+    <span class="proof-num">$0</span>
+    <span class="proof-label">Experience Required</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="section-inner">
+    <span class="section-tag reveal">The Problem</span>
+    <h2 class="section-title reveal">You have skills.<br/><em>You just don't have a system.</em></h2>
+    <p class="section-body reveal">Most people leave school or try to freelance with real, marketable abilities — but no roadmap for turning them into income. Sound familiar?</p>
+    <div class="problem-grid reveal">
+      <div class="problem-card">
+        <p>I know I can do this but I don't know how to get started or find clients.</p>
+      </div>
+      <div class="problem-card">
+        <p>How do I build a portfolio when I have no experience or past clients?</p>
+      </div>
+      <div class="problem-card">
+        <p>I'm scared to charge because I don't know if my work is worth it.</p>
+      </div>
+      <div class="problem-card">
+        <p>I've tried putting myself out there but nothing seems to be working.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules">
+  <div class="section-inner">
+    <span class="section-tag reveal">What's Inside</span>
+    <h2 class="section-title reveal">Six modules.<br/><em>One complete system.</em></h2>
+    <p class="section-body reveal">Every module builds on the last. By the end, you don't just know what to do — you've already started doing it.</p>
+    <div class="module-list reveal">
+      <div class="module-item">
+        <div class="module-num">01</div>
+        <div class="module-content">
+          <div class="module-label">Module One</div>
+          <div class="module-title">Know What You Have — The Skills Audit</div>
+          <div class="module-desc">Identify your marketable skills, map them to income opportunities, and find your niche using a simple, proven framework.</div>
+        </div>
+      </div>
+      <div class="module-item">
+        <div class="module-num">02</div>
+        <div class="module-content">
+          <div class="module-label">Module Two</div>
+          <div class="module-title">Build Your Proof — The Zero-Experience Portfolio Blueprint</div>
+          <div class="module-desc">Create a compelling portfolio from scratch using spec work strategies — even with zero paid projects to your name.</div>
+        </div>
+      </div>
+      <div class="module-item">
+        <div class="module-num">03</div>
+        <div class="module-content">
+          <div class="module-label">Module Three</div>
+          <div class="module-title">Price Yourself Right — The Freelance Pricing Guide</div>
+          <div class="module-desc">Set rates that are fair, competitive, and sustainable. Know when and how to raise them — and how to communicate your value with confidence.</div>
+        </div>
+      </div>
+      <div class="module-item">
+        <div class="module-num">04</div>
+        <div class="module-content">
+          <div class="module-label">Module Four</div>
+          <div class="module-title">Find Your First Client — The Client Acquisition Playbook</div>
+          <div class="module-desc">The 5 best places to find clients, cold outreach scripts that get responses, and a proposal template that wins jobs.</div>
+        </div>
+      </div>
+      <div class="module-item">
+        <div class="module-num">05</div>
+        <div class="module-content">
+          <div class="module-label">Module Five</div>
+          <div class="module-title">Show Up Online — The Personal Brand Starter Kit</div>
+          <div class="module-desc">Build a LinkedIn, Twitter/X, and Instagram presence that attracts clients while you sleep — with a 2-week content starter plan included.</div>
+        </div>
+      </div>
+      <div class="module-item">
+        <div class="module-num">06</div>
+        <div class="module-content">
+          <div class="module-label">Module Six</div>
+          <div class="module-title">Execute — The 30-Day Launch Plan</div>
+          <div class="module-desc">A day-by-day action plan from Day 1 to first client. Daily tasks, progress milestones, and a clear path forward — no guesswork.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BONUSES -->
+<section class="bonuses">
+  <div class="section-inner">
+    <span class="section-tag reveal">Free Bonuses</span>
+    <h2 class="section-title reveal">Three bonuses.<br/><em>Included at no extra cost.</em></h2>
+    <p class="section-body reveal">These aren't fillers. Each one solves a real problem you'll face on the journey to your first client.</p>
+    <div class="bonus-grid reveal">
+      <div class="bonus-card">
+        <div class="bonus-icon">✉️</div>
+        <div class="bonus-title">Client Email Script Pack</div>
+        <div class="bonus-desc">10 ready-to-send email templates covering every stage — cold outreach, proposals, follow-ups, rate increases, and re-engagement.</div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-icon">📋</div>
+        <div class="bonus-title">Freelance Starter Toolkit</div>
+        <div class="bonus-desc">Professional invoice template, simple client contract, and project brief template. Everything you need to operate like a real business from day one.</div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-icon">💰</div>
+        <div class="bonus-title">Skills-to-Income Cheat Sheet</div>
+        <div class="bonus-desc">A one-page reference of the most in-demand freelance skills and their current global average rates — so you always know what to charge.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-inner">
+    <span class="section-tag reveal">What People Say</span>
+    <h2 class="section-title reveal">Real results from<br/><em>real beginners.</em></h2>
+    <div class="testi-grid reveal">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">I landed my first social media client in week three. The cold outreach script was the game changer. I had been too scared to reach out to anyone before this.</div>
+        <div class="testi-author"><strong>Amara K.</strong>Fresh Graduate, Lagos</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">The portfolio module alone is worth 10x the price. I had no idea you could build a portfolio without clients. I had three samples done in two days.</div>
+        <div class="testi-author"><strong>David O.</strong>Freelance Copywriter</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">I was charging way too little before this. The pricing module made me realise I was basically paying clients to work for them. I doubled my rates and kept my clients.</div>
+        <div class="testi-author"><strong>Chioma N.</strong>Graphic Designer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwho">
+  <div class="section-inner">
+    <span class="section-tag reveal">Is This For You?</span>
+    <h2 class="section-title reveal">IncomeCraft is built<br/><em>for the right person.</em></h2>
+    <div class="forwho-grid reveal">
+      <div class="forwho-col yes">
+        <h3>✦ This IS for you if...</h3>
+        <div class="forwho-item"><span class="icon">◆</span><span>You're a student or fresh graduate with skills but no income from them</span></div>
+        <div class="forwho-item"><span class="icon">◆</span><span>You want to start freelancing but don't know where to begin</span></div>
+        <div class="forwho-item"><span class="icon">◆</span><span>You're currently employed but want income on the side</span></div>
+        <div class="forwho-item"><span class="icon">◆</span><span>You're willing to follow a system and put in the work</span></div>
+        <div class="forwho-item"><span class="icon">◆</span><span>You want real, practical steps — not theory or motivation</span></div>
+      </div>
+      <div class="forwho-col no">
+        <h3>✕ This is NOT for you if...</h3>
+        <div class="forwho-item"><span class="icon">✕</span><span>You're looking for a get-rich-quick scheme with no effort</span></div>
+        <div class="forwho-item"><span class="icon">✕</span><span>You already have an established client base and steady income</span></div>
+        <div class="forwho-item"><span class="icon">✕</span><span>You're not willing to take action on what you read</span></div>
+        <div class="forwho-item"><span class="icon">✕</span><span>You want someone else to do the work for you</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-inner" style="text-align:center;">
+    <span class="section-tag reveal">Pricing</span>
+    <h2 class="section-title reveal">One payment.<br/><em>Everything you need.</em></h2>
+    <p class="section-body reveal" style="margin:0 auto 0;">No subscriptions. No upsells. No fluff. Just the complete system at a launch price that won't last.</p>
+    <div class="pricing-card reveal">
+      <div class="price-badge">Launch Price — Limited Time</div>
+      <div class="price-was">Regular price $37</div>
+      <div class="price-now"><sup>$</sup>19</div>
+      <div class="price-note">One-time payment · Instant delivery · Yours forever</div>
+      <div class="price-includes">
+        <div class="price-includes-item"><span class="check">◆</span><span>All 6 Modules — The Complete Playbook</span></div>
+        <div class="price-includes-item"><span class="check">◆</span><span>The 30-Day Step-by-Step Action Plan</span></div>
+        <div class="price-includes-item"><span class="check">◆</span><span>Bonus: Client Email Script Pack (10 Templates)</span></div>
+        <div class="price-includes-item"><span class="check">◆</span><span>Bonus: Freelance Starter Toolkit (Invoice + Contract)</span></div>
+        <div class="price-includes-item"><span class="check">◆</span><span>Bonus: Skills-to-Income Cheat Sheet</span></div>
+        <div class="price-includes-item"><span class="check">◆</span><span>Instant Digital Download — Access in 60 Seconds</span></div>
+      </div>
+      <a href="https://selar.co" target="_blank" class="btn-primary" style="display:block; width:100%; text-align:center;">Get Instant Access — $19</a>
+      <div class="guarantee"><span>🔒</span><span>Secure checkout via Selar · Instant delivery to your email</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-inner">
+    <span class="section-tag reveal">FAQ</span>
+    <h2 class="section-title reveal">Common questions,<br/><em>honest answers.</em></h2>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-q">What format is the product? <span class="arrow">+</span></button>
+        <div class="faq-a">IncomeCraft is a digital PDF guide delivered instantly to your email after purchase. You can read it on any device — phone, tablet, or computer.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Do I need any prior experience or qualifications? <span class="arrow">+</span></button>
+        <div class="faq-a">None at all. IncomeCraft was specifically designed for people with zero work experience or prior freelancing history. If you have a skill — any skill — this guide will show you how to monetise it.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How quickly can I expect results? <span class="arrow">+</span></button>
+        <div class="faq-a">Results depend on your effort and consistency. Many people who follow the 30-day plan land their first client within the first three to four weeks. The system works — but only if you do.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is this relevant outside of Nigeria or Africa? <span class="arrow">+</span></button>
+        <div class="faq-a">Yes, completely. The strategies, platforms, and systems in IncomeCraft work globally. All pricing examples include international context.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What if I already have some experience? <span class="arrow">+</span></button>
+        <div class="faq-a">IncomeCraft will still be highly valuable. The pricing module, client acquisition strategies, and personal brand framework are useful at any stage of your freelance journey.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What payment methods are accepted? <span class="arrow">+</span></button>
+        <div class="faq-a">Payment is processed securely through Selar, which accepts cards and various local payment options depending on your location.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2 class="reveal">The only thing between<br/>you and your first client<br/>is <em>a system.</em></h2>
+  <p class="reveal">You have the skills. Now get the playbook.</p>
+  <a href="#pricing" class="btn-primary reveal">Get IncomeCraft — $19</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="logo-f">IncomeCraft</span>
+  <p>© 2025 IncomeCraft. All rights reserved. Delivered via Selar.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
